@@ -54,17 +54,17 @@ async function findReportUrls({
   headSha,
   foundBaseUrl,
   foundHeadUrl,
-  page = 0,
+  page = 1,
 }) {
-  const artifactsList = await getArtifactsList(githubToken, page);
+  const allArtifacts = await getArtifactsList(githubToken, page);
 
   const baseArtifactInfo = findArtifactInfo(
-    artifactsList.artifacts,
+    allArtifacts.artifacts,
     COVERAGE_REPORT_NAME,
     baseSha
   );
   const headArtifactInfo = findArtifactInfo(
-    artifactsList.artifacts,
+    allArtifacts.artifacts,
     COVERAGE_REPORT_NAME,
     headSha
   );
@@ -72,7 +72,7 @@ async function findReportUrls({
   const baseUrl = foundBaseUrl || (baseArtifactInfo && baseArtifactInfo.url);
   const headUrl = foundHeadUrl || (headArtifactInfo && headArtifactInfo.url);
 
-  if ((baseUrl && headUrl) || artifactsList.total_count === 0)
+  if ((baseUrl && headUrl) || allArtifacts.total_count === 0)
     return { baseUrl, headUrl };
 
   return findReportUrls({
@@ -87,9 +87,9 @@ async function findReportUrls({
 
 async function getReports(githubToken, baseSha, headSha) {
   console.log({ githubToken, baseSha, headSha });
-  const artifactsList = await getArtifactsList();
+  const allArtifacts = await getArtifactsList();
 
-  console.log(JSON.stringify(artifactsList));
+  console.log(JSON.stringify(allArtifacts));
 
   const { baseUrl, headUrl } = await findReportUrls(
     githubToken,
