@@ -2,6 +2,7 @@ const { Octokit } = require("@octokit/core");
 const decompress = require("decompress");
 
 const fs = require("fs");
+const { resolve } = require("path");
 
 // const { getAuthToken } = require("./getAuthToken");
 
@@ -43,7 +44,12 @@ async function downloadArtifact(githubToken, id, filePath) {
     }
   );
 
-  return fs.writeFileSync(filePath, Buffer.from(res.data));
+  return new Promise((resolve, reject) => {
+    fs.writeFile(filePath, Buffer.from(res.data), (err) => {
+      if (err) return reject(err);
+      resolve();
+    });
+  });
 }
 
 async function findReportUrls({
@@ -93,19 +99,20 @@ async function getReports(githubToken, baseSha, headSha) {
     headSha,
   });
 
-  await downloadAndUnzip({
-    branch: "base",
-    githubToken,
-    id: baseId,
-    type: COVERAGE_REPORT_NAME,
-  });
-
-  await downloadAndUnzip({
-    branch: "head",
-    githubToken,
-    id: headId,
-    type: COVERAGE_REPORT_NAME,
-  });
+  await Promise.all([
+    downloadAndUnzip({
+      branch: "base",
+      githubToken,
+      id: baseId,
+      type: COVERAGE_REPORT_NAME,
+    }),
+    downloadAndUnzip({
+      branch: "head",
+      githubToken,
+      id: headId,
+      type: COVERAGE_REPORT_NAME,
+    }),
+  ]);
 
   console.log({ __dirname: fs.readdirSync(__dirname) });
 }
