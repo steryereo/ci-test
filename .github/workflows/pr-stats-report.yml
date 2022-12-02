@@ -1,0 +1,43 @@
+name: Report PR stats
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+env:
+  GITHUB_TOKEN: ${{ secrets.SCRIBD_GITHUB_GENERIC_TOKEN }}
+  BASE_SHA: ${{ github.event.pull_request.base.sha }}
+  HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+
+jobs:
+  report-stats:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Wait for head coverage report
+        uses: fountainhead/action-wait-for-check@v1.1.0
+        id: wait-for-head
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: test
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - name: Wait for base coverage report
+        uses: fountainhead/action-wait-for-check@v1.1.0
+        id: wait-for-head
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: test
+          ref: ${{ github.event.pull_request.head.sha }}
+
+      - uses: actions/checkout@v3
+
+      - name: Use Node.js
+        uses: actions/setup-node@v3
+        with:
+          node-version: 18
+
+      - name: Install Dependencies
+        run: cd ci && yarn
+
+      - name: Download artifacts
+        run: node ci/getCoverageReports.js $GITHUB_TOKEN $BASE_SHA $HEAD_SHA
