@@ -43,21 +43,20 @@ jobs:
         run: |
           node ci/getCoverageReports.js ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
 
-      - name: Extract downloaded reports
-        run: |
-          cd ci
+      # - name: Extract downloaded reports
+      #   run: |
+      #     cd ci
 
-          mkdir base-coverage
-          mkdir head-coverage
+      #     mkdir base-coverage
+      #     mkdir head-coverage
 
-          unzip base-coverage.zip -d base-coverage
-          tar -xzvf base-coverage/coverage.tgz -C base-coverage
+      #     unzip base-coverage.zip -d base-coverage
+      #     tar -xzvf base-coverage/coverage.tgz -C base-coverage
 
-          unzip head-coverage.zip -d head-coverage
-          tar -xzvf head-coverage/coverage.tgz -C head-coverage
+      #     unzip head-coverage.zip -d head-coverage
+      #     tar -xzvf head-coverage/coverage.tgz -C head-coverage
 
-
-          ls -la base-coverage
+      #     ls -la base-coverage
 
       - name: Send PR comment with coverage diff
         run: |
