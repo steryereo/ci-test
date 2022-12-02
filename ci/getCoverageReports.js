@@ -72,6 +72,17 @@ async function findReportUrls({
   });
 }
 
+async function downloadAndUnzip({ branch, githubToken, id, type }) {
+  const destDir = `${__dirname}/${branch}-${type}`;
+  const zipFilePath = `${destDir}.zip`;
+
+  await downloadArtifact(githubToken, id, zipFilePath);
+
+  const unzipped = decompress(zipFilePath, destDir);
+
+  console.log({ unzipped });
+}
+
 async function getReports(githubToken, baseSha, headSha) {
   const { baseId, headId } = await findReportUrls({
     githubToken,
@@ -79,26 +90,19 @@ async function getReports(githubToken, baseSha, headSha) {
     headSha,
   });
 
-  console.log({ baseId, headId });
+  await downloadAndUnzip({
+    branch: "base",
+    githubToken,
+    id: baseId,
+    type: COVERAGE_REPORT_NAME,
+  });
 
-  const BASE_DEST_DIR = `${__dirname}/base-coverage`;
-  const HEAD_DEST_DIR = `${__dirname}/base-coverage`;
-
-  const BASE_FILE_PATH = `${BASE_DEST_DIR}.zip`;
-  const HEAD_FILE_PATH = `${HEAD_DEST_DIR}.zip`;
-
-  const baseZip = await downloadArtifact(githubToken, baseId, BASE_FILE_PATH);
-  const headZip = await downloadArtifact(githubToken, headId, HEAD_FILE_PATH);
-
-  console.log({ baseZip, headZip });
-
-  // fs.mkdirSync(BASE_DEST_DIR);
-  // fs.mkdirSync(HEAD_DEST_DIR);
-
-  console.log({ __dirname: fs.readdirSync(__dirname) });
-
-  await decompress(BASE_FILE_PATH, BASE_DEST_DIR);
-  await decompress(HEAD_FILE_PATH, HEAD_DEST_DIR);
+  await downloadAndUnzip({
+    branch: "head",
+    githubToken,
+    id: headId,
+    type: COVERAGE_REPORT_NAME,
+  });
 
   console.log({ __dirname: fs.readdirSync(__dirname) });
 }
