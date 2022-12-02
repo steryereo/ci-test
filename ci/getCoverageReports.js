@@ -75,12 +75,15 @@ async function findReportUrls({
 async function downloadAndUnzip({ branch, githubToken, id, type }) {
   const destDir = `${__dirname}/${branch}-${type}`;
   const zipFilePath = `${destDir}.zip`;
+  const tarFilePath = `${destDir}/${type}.tgz`;
 
   await downloadArtifact(githubToken, id, zipFilePath);
 
-  const unzipped = await decompress(zipFilePath, destDir);
+  await decompress(zipFilePath, destDir);
 
-  console.log({ unzipped });
+  const untarred = await decompress(tarFilePath);
+
+  console.log({ untarred });
 }
 
 async function getReports(githubToken, baseSha, headSha) {
