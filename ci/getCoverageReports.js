@@ -78,7 +78,7 @@ async function downloadAndUnzip({ branch, githubToken, id, type }) {
 
   await downloadArtifact(githubToken, id, zipFilePath);
 
-  const unzipped = decompress(zipFilePath, destDir);
+  const unzipped = await decompress(zipFilePath, destDir);
 
   console.log({ unzipped });
 }
