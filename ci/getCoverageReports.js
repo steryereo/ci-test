@@ -58,6 +58,8 @@ async function findReportUrls({
 }) {
   const allArtifacts = await getArtifactsList(githubToken, page);
 
+  console.log(allArtifacts);
+
   const baseArtifactInfo = findArtifactInfo(
     allArtifacts.artifacts,
     COVERAGE_REPORT_NAME,
