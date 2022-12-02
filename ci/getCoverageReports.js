@@ -99,6 +99,8 @@ async function getReports(githubToken, baseSha, headSha) {
 
   decompress(BASE_FILE_PATH, BASE_DEST_DIR);
   decompress(HEAD_FILE_PATH, HEAD_DEST_DIR);
+
+  console.log({ __dirname: fs.readdirSync(__dirname) });
 }
 
 /* istanbul ignore next */
