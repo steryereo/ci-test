@@ -4,10 +4,8 @@ on:
   pull_request:
     types: [opened, synchronize]
 
-env:
-  GITHUB_TOKEN: ${{ secrets.SCRIBD_GITHUB_GENERIC_TOKEN }}
-  BASE_SHA: ${{ github.event.pull_request.base.sha }}
-  HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+permissions:
+  actions: write
 
 jobs:
   report-stats:
@@ -39,5 +37,25 @@ jobs:
       - name: Install Dependencies
         run: cd ci && yarn
 
-      - name: Download artifacts
-        run: node ci/getCoverageReports.js $GITHUB_TOKEN $BASE_SHA $HEAD_SHA
+      - name: Download coverage reports
+        run: |
+          node ci/getCoverageReports.js ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
+
+      - name: Extract downloaded reports
+        run: |
+          cd ci
+
+          mkdir base-coverage
+          mkdir head-coverage
+
+          unzip base-coverage.zip -d base-coverage
+          tar -xzvf base-coverage/coverage.tgz -C base-coverage
+
+          unzip head-coverage.zip -d head-coverage
+          tar -xzvf head-coverage/coverage.tgz -C head-coverage
+
+
+          ls -la base-coverage
+
+      - name: Send PR comment with coverage diff
+        run: node ci/sendCoveragePRComment.js base-coverage/coverage-summary.json head-coverage/coverage-summary.json ${{ secrets.GITHUB_TOKEN }} ${{ github.event.number }}

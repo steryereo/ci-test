@@ -1,119 +1,90 @@
-const fetch = require("node-fetch");
+const { Octokit } = require("@octokit/core");
 
 const fs = require("fs");
-const decompress = require("decompress");
 
-const { getAuthToken } = require("./getAuthToken");
+// const { getAuthToken } = require("./getAuthToken");
 
 const COVERAGE_REPORT_NAME = "coverage";
+const PER_PAGE = 100;
 
-function findArtifactInfo(list, name, sha) {
+function findArtifactId(list, sha) {
   for (let i = 0; i < list.length; i++) {
     const info = list[i];
 
-    if (info.name === name && info.workflow_run.head_sha === sha) return info;
+    if (info.workflow_run.head_sha === sha) return info.id;
   }
 }
 
-async function getArtifactsList(githubToken, page = 1) {
-  const res = await fetch(
-    `https://api.github.com/repos/scribd/pages-deploy-test/actions/artifacts?page=${page}`,
+async function fetchAllArtifacts(githubToken, page = 1) {
+  const octokit = new Octokit({ auth: githubToken });
 
-    // `https://api.github.com/repos/scribd/node-chassis/actions/artifacts?per_page=100&page=${page}`,
+  const res = await octokit.request(
+    `GET /repos/steryereo/ci-test/actions/artifacts?per_page=${PER_PAGE}&page=${page}&name=${COVERAGE_REPORT_NAME}`,
     {
-      headers: {
-        Accept: "application/vnd.github+json",
-        Authorization: `Basic ${getAuthToken(githubToken)}`,
-        "Content-Type": "application/x-www-form-urlencoded",
-      },
+      owner: "steryereo",
+      repo: "ci-test",
     }
   );
 
-  console.log({ page, res });
-  return res.json();
+  return res.data;
 }
 
-async function downloadArtifact(githubToken, url, title) {
-  const res = await fetch(url, {
-    headers: {
-      Authorization: `Basic ${getAuthToken(githubToken)}`,
-    },
-  });
+async function downloadArtifact(githubToken, id, filePath) {
+  const octokit = new Octokit({ auth: githubToken });
 
-  return new Promise((resolve, reject) => {
-    const dest = fs.createWriteStream(title);
-    res.body.pipe(dest);
-    dest.on("close", resolve);
-    dest.on("error", reject);
-  });
+  const res = await octokit.request(
+    `GET /repos/steryereo/ci-test/actions/artifacts/${id}/zip`,
+    {
+      owner: "steryereo",
+      repo: "ci-test",
+      artifact_id: id,
+      archive_format: "zip",
+    }
+  );
+
+  return fs.writeFileSync(filePath, Buffer.from(res.data));
 }
 
 async function findReportUrls({
   githubToken,
   baseSha,
   headSha,
-  foundBaseUrl,
-  foundHeadUrl,
+  foundBaseId,
+  foundHeadId,
   page = 1,
 }) {
-  const allArtifacts = await getArtifactsList(githubToken, page);
+  const allArtifacts = await fetchAllArtifacts(githubToken, page);
 
-  console.log(allArtifacts);
+  const baseId = foundBaseId || findArtifactId(allArtifacts.artifacts, baseSha);
+  const headId = foundHeadId || findArtifactId(allArtifacts.artifacts, headSha);
 
-  const baseArtifactInfo = findArtifactInfo(
-    allArtifacts.artifacts,
-    COVERAGE_REPORT_NAME,
-    baseSha
-  );
-  const headArtifactInfo = findArtifactInfo(
-    allArtifacts.artifacts,
-    COVERAGE_REPORT_NAME,
-    headSha
-  );
-
-  const baseUrl = foundBaseUrl || (baseArtifactInfo && baseArtifactInfo.url);
-  const headUrl = foundHeadUrl || (headArtifactInfo && headArtifactInfo.url);
-
-  if ((baseUrl && headUrl) || allArtifacts.total_count === 0)
-    return { baseUrl, headUrl };
+  if ((baseId && headId) || allArtifacts.total_count < page * PER_PAGE)
+    return { baseId, headId };
 
   return findReportUrls({
     githubToken,
     baseSha,
     headSha,
-    foundBaseUrl,
-    foundHeadUrl,
+    foundBaseId,
+    foundHeadId,
     page: page + 1,
   });
 }
 
 async function getReports(githubToken, baseSha, headSha) {
-  console.log({ githubToken, baseSha, headSha });
-  const allArtifacts = await getArtifactsList();
-
-  console.log(JSON.stringify(allArtifacts));
-
-  const { baseUrl, headUrl } = await findReportUrls(
+  const { baseId, headId } = await findReportUrls({
     githubToken,
     baseSha,
-    headSha
-  );
+    headSha,
+  });
 
-  downloadArtifact(githubToken, baseUrl, "base-coverage.zip");
-  downloadArtifact(githubToken, headUrl, "head-coverage.zip");
+  console.log({ baseId, headId });
 
-  await decompress("base-coverage.zip");
-  await decompress("head-coverage.zip");
+  const BASE_FILE_PATH = `${__dirname}/base-coverage.zip`;
+  const HEAD_FILE_PATH = `${__dirname}/head-coverage.zip`;
 
-  const baseReport = JSON.parse(
-    fs.readFileSync("base-coverage/coverage-summary.json")
-  );
-  const headReport = JSON.parse(
-    fs.readFileSync("head-coverage/coverage-summary.json")
-  );
-
-  console.log(baseReport);
-  console.log(headReport);
+  downloadArtifact(githubToken, baseId, BASE_FILE_PATH);
+  downloadArtifact(githubToken, headId, HEAD_FILE_PATH);
 }
 
 /* istanbul ignore next */
