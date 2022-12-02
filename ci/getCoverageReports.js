@@ -97,8 +97,8 @@ async function getReports(githubToken, baseSha, headSha) {
 
   console.log({ __dirname: fs.readdirSync(__dirname) });
 
-  decompress(BASE_FILE_PATH, BASE_DEST_DIR);
-  decompress(HEAD_FILE_PATH, HEAD_DEST_DIR);
+  await decompress(BASE_FILE_PATH, BASE_DEST_DIR);
+  await decompress(HEAD_FILE_PATH, HEAD_DEST_DIR);
 
   console.log({ __dirname: fs.readdirSync(__dirname) });
 }
