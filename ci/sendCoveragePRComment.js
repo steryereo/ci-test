@@ -17,12 +17,11 @@ function getRow(cells) {
 }
 
 function getReportData(fileName) {
-  const path = `${__dirname}/${baseReportFile}`;
+  const path = `${__dirname}/${fileName}`;
 
-  if (!fs.existsSync(path))
-    throw new Error(`file not found: ${baseReportPath}`);
+  if (!fs.existsSync(path)) throw new Error(`file not found: ${path}`);
 
-  return JSON.parse(fs.readFileSync(baseReportPath));
+  return JSON.parse(fs.readFileSync(path));
 }
 
 function generateCoverageCommentData(baseReportFile, headReportFile) {
