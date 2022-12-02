@@ -87,7 +87,7 @@ async function downloadAndUnzip({ branch, githubToken, id, type }) {
 
   await decompress(zipFilePath, destDir);
 
-  const untarred = await decompress(tarFilePath);
+  const untarred = await decompress(tarFilePath, destDir);
 
   console.log({ untarred });
 }
