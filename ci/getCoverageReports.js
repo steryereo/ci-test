@@ -1,4 +1,5 @@
 const { Octokit } = require("@octokit/core");
+const decompress = require("decompress");
 
 const fs = require("fs");
 
@@ -80,11 +81,22 @@ async function getReports(githubToken, baseSha, headSha) {
 
   console.log({ baseId, headId });
 
-  const BASE_FILE_PATH = `${__dirname}/base-coverage.zip`;
-  const HEAD_FILE_PATH = `${__dirname}/head-coverage.zip`;
+  const BASE_DEST_DIR = `${__dirname}/base-coverage`;
+  const HEAD_DEST_DIR = `${__dirname}/base-coverage`;
 
-  downloadArtifact(githubToken, baseId, BASE_FILE_PATH);
-  downloadArtifact(githubToken, headId, HEAD_FILE_PATH);
+  const BASE_FILE_PATH = `${BASE_DEST_DIR}.zip`;
+  const HEAD_FILE_PATH = `${HEAD_DEST_DIR}.zip`;
+
+  const baseZip = await downloadArtifact(githubToken, baseId, BASE_FILE_PATH);
+  const headZip = await downloadArtifact(githubToken, headId, HEAD_FILE_PATH);
+
+  console.log({ baseZip, headZip });
+
+  fs.mkdirSync(BASE_DEST_DIR);
+  fs.mkdirSync(HEAD_DEST_DIR);
+
+  decompress(BASE_FILE_PATH, BASE_DEST_DIR);
+  decompress(HEAD_FILE_PATH, HEAD_DEST_DIR);
 }
 
 /* istanbul ignore next */

@@ -55,18 +55,6 @@ async function makeRequest(body, prNumber, githubToken) {
       body,
     }
   );
-  // return fetch(
-  //   `https://api.github.com/repos/steryereo/ci-test/issues/${prNumber}/comments`,
-  //   {
-  //     method: "POST",
-  //     headers: {
-  //       Accept: "application/vnd.github+json",
-  //       Authorization: `token ${githubToken}`,
-  //       "Content-Type": "application/x-www-form-urlencoded",
-  //     },
-  //     body: JSON.stringify({ body }),
-  //   }
-  // );
 }
 
 async function sendCoveragePRComment(
