@@ -6,6 +6,8 @@ on:
 
 permissions:
   actions: write
+  issues: write
+  pull-requests: write
 
 jobs:
   report-stats:
@@ -58,4 +60,6 @@ jobs:
           ls -la base-coverage
 
       - name: Send PR comment with coverage diff
-        run: node ci/sendCoveragePRComment.js base-coverage/coverage-summary.json head-coverage/coverage-summary.json ${{ secrets.GITHUB_TOKEN }} ${{ github.event.number }}
+        run: |
+          cd ci
+          node sendCoveragePRComment.js base-coverage/coverage-summary.json head-coverage/coverage-summary.json ${{ github.event.number }} ${{ secrets.GITHUB_TOKEN }}

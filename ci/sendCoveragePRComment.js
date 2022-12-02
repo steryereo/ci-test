@@ -7,7 +7,7 @@ const TEST_COVERAGE_THRESHOLD = process.env.TEST_COVERAGE_THRESHOLD;
 const KEYS = ["statements", "branches", "functions", "lines"];
 
 function getPercentCell(baseEntry, headEntry) {
-  return `~~${baseEntry.pct}%~~ ${headEntry.pct} ${
+  return `~~${baseEntry.pct}%~~ ${headEntry.pct}% ${
     headEntry.pct >= baseEntry.pct ? "✅" : "❌"
   }`;
 }
@@ -55,15 +55,15 @@ async function makeRequest(body, prNumber, githubToken) {
     }
   );
   // return fetch(
-  //   `https://api.github.com/repos/scribd/node-chassis/issues/${prNumber}/comments`,
+  //   `https://api.github.com/repos/steryereo/ci-test/issues/${prNumber}/comments`,
   //   {
   //     method: "POST",
   //     headers: {
   //       Accept: "application/vnd.github+json",
-  //       Authorization: `Basic ${authToken}`,
+  //       Authorization: `token ${githubToken}`,
   //       "Content-Type": "application/x-www-form-urlencoded",
   //     },
-  //     body,
+  //     body: JSON.stringify({ body }),
   //   }
   // );
 }
@@ -79,7 +79,9 @@ async function sendCoveragePRComment(
 
     const response = await makeRequest(body, prNumber, githubToken);
 
-    console.log(JSON.stringify({ file, prNumber, githubToken }));
+    console.log(
+      JSON.stringify({ baseReportFile, headReportFile, prNumber, githubToken })
+    );
 
     const data = await response.json();
 
