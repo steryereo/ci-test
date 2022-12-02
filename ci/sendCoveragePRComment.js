@@ -16,17 +16,18 @@ function getRow(cells) {
   return `| ${cells.join(" | ")} |`;
 }
 
-function generateCoverageCommentData(baseReportFile, headReportFile) {
-  const baseReportPath = `${__dirname}/${baseReportFile}`;
-  const headReportPath = `${__dirname}/${headReportFile}`;
+function getReportData(fileName) {
+  const path = `${__dirname}/${baseReportFile}`;
 
-  if (!fs.existsSync(baseReportPath))
+  if (!fs.existsSync(path))
     throw new Error(`file not found: ${baseReportPath}`);
-  if (!fs.existsSync(headReportPath))
-    throw new Error(`file not found: ${headReportPath}`);
 
-  const baseData = JSON.parse(fs.readFileSync(baseReportPath));
-  const headData = JSON.parse(fs.readFileSync(headReportPath));
+  return JSON.parse(fs.readFileSync(baseReportPath));
+}
+
+function generateCoverageCommentData(baseReportFile, headReportFile) {
+  const baseData = getReportData(baseReportFile);
+  const headData = getReportData(headReportFile);
 
   const rows = [
     "### Test coverage",
@@ -83,7 +84,7 @@ async function sendCoveragePRComment(
       JSON.stringify({ baseReportFile, headReportFile, prNumber, githubToken })
     );
 
-    const data = await response.json();
+    const data = response.data;
 
     console.log(data);
     if (response.status !== 201) throw new Error(response.statusText);
