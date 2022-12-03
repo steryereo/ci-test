@@ -6,7 +6,7 @@ const { GITHUB_ACTIONS_APP_ID, OWNER, REPO } = require("./constants");
 const COVERAGE_KEYS = ["statements", "branches", "functions", "lines"];
 
 function getReportDownloadLink({ suiteId, artifactId }) {
-  return `https://github.com/${OWNER}/${REPO}/suites/${suiteId}/artifacts/${artifactId}`;
+  return `[Download here](https://github.com/${OWNER}/${REPO}/suites/${suiteId}/artifacts/${artifactId})`;
 }
 
 function getBranchRow(apiInfo, jsonData, suiteId) {
@@ -43,8 +43,6 @@ function generateCoverageCommentData({
   baseSuiteId,
   headSuiteId,
 }) {
-  console.log(JSON.stringify(baseCoverage));
-
   const baseJsonData = getReportData(
     `${baseCoverage.reportDir}/coverage-summary.json`
   );
