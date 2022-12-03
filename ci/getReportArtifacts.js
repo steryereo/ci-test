@@ -10,12 +10,14 @@ const { OWNER, REPO } = require("./constants");
 const COVERAGE_REPORT_NAME = "coverage";
 const PER_PAGE = 100;
 
-function findArtifactId(list, sha) {
+function findArtifactInfo(list, sha) {
   for (let i = 0; i < list.length; i++) {
     const info = list[i];
 
     if (info.workflow_run.head_sha === sha) return info;
   }
+
+  return null;
 }
 
 async function fetchAllArtifacts(githubToken, page = 1) {
@@ -64,9 +66,9 @@ async function findReportData({
   const allArtifacts = await fetchAllArtifacts(githubToken, page);
 
   const baseInfo =
-    foundBaseInfo || findArtifactId(allArtifacts.artifacts, baseSha);
+    foundBaseInfo || findArtifactInfo(allArtifacts.artifacts, baseSha);
   const headInfo =
-    foundHeadInfo || findArtifactId(allArtifacts.artifacts, headSha);
+    foundHeadInfo || findArtifactInfo(allArtifacts.artifacts, headSha);
 
   if ((baseInfo && headInfo) || allArtifacts.total_count < page * PER_PAGE)
     return { baseInfo, headInfo };
@@ -75,8 +77,8 @@ async function findReportData({
     githubToken,
     baseSha,
     headSha,
-    foundBaseInfo,
-    foundHeadInfo,
+    foundBaseInfo: baseInfo,
+    foundHeadInfo: headInfo,
     page: page + 1,
   });
 }
