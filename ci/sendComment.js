@@ -36,7 +36,7 @@ function getRow(cells) {
 
 function getReportData(path) {
   if (!fs.existsSync(path)) throw new Error(`file not found: ${path}`);
-⚠️
+
   return JSON.parse(fs.readFileSync(path));
 }
 
