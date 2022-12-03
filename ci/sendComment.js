@@ -56,6 +56,23 @@ function generateCoverageCommentData(baseCoverage, headCoverage) {
   return rows.join("\n");
 }
 
+async function fetchCheckSuite(githubToken, ref) {
+  const octokit = new Octokit({
+    auth: githubToken,
+  });
+
+  const res = await octokit.request(
+    `GET /repos/steryereo/ci-test/commits/${ref}/check-suites`,
+    {
+      owner: "steryereo",
+      repo: "ci-test",
+      ref,
+    }
+  );
+
+  console.log(JSON.stringify({ res }));
+}
+
 async function makeRequest(body, prNumber, githubToken) {
   const octokit = new Octokit({ auth: githubToken });
 
@@ -72,6 +89,9 @@ async function makeRequest(body, prNumber, githubToken) {
 
 async function sendComment({ base, head, prNumber, githubToken }) {
   console.log(JSON.stringify({ base, head, prNumber, githubToken }));
+
+  await fetchCheckSuite(base.apiInfo.workflow_run.head_ref);
+  await fetchCheckSuite(head.apiInfo.workflow_run.head_ref);
 
   const body = generateCoverageCommentData(base.coverage, head.coverage);
 
