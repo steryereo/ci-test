@@ -64,7 +64,7 @@ async function findReportData({
   page = 1,
 }) {
   const allArtifacts = await fetchAllArtifacts(githubToken, page);
-
+  console.log(JSON.stringify({ allArtifacts }));
   const baseInfo =
     foundBaseInfo || findArtifactInfo(allArtifacts.artifacts, baseSha);
   const headInfo =
