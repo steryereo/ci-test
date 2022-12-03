@@ -1,6 +1,7 @@
 const { Octokit } = require("@octokit/core");
 
 const fs = require("fs");
+
 const { GITHUB_ACTIONS_APP_ID, OWNER, REPO } = require("./constants");
 
 const COVERAGE_KEYS = ["statements", "branches", "functions", "lines"];
@@ -18,7 +19,7 @@ function getBranchRow(apiInfo, jsonData, suiteId) {
 }
 
 function getDiffCell(diff) {
-  return `${diff}% ${diff >= 0 ? ":white-check-mark:" : ":warning:"}`;
+  return `${diff}% ${diff >= 0 ? ":white_check_mark:" : ":warning:"}`;
 }
 
 function getDiffRow(baseJsonData, headJsonData) {
