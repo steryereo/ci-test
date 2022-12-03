@@ -13,14 +13,6 @@ jobs:
   report-stats:
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for head coverage report
-        uses: fountainhead/action-wait-for-check@v1.1.0
-        id: wait-for-head
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: test
-          ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Wait for base coverage report
         uses: fountainhead/action-wait-for-check@v1.1.0
         id: wait-for-base
@@ -28,6 +20,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           checkName: test
           ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Wait for head coverage report
+        uses: fountainhead/action-wait-for-check@v1.1.0
+        id: wait-for-head
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: test
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - uses: actions/checkout@v3
 
