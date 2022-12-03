@@ -10,7 +10,6 @@ function getReportDownloadLink({ suiteId, artifactId }) {
 }
 
 function getBranchRow(apiInfo, jsonData, suiteId) {
-  console.log({ apiInfo, jsonData });
   return getRow([
     `\`${apiInfo.workflow_run.head_branch}\``,
     ...COVERAGE_KEYS.map((key) => `${jsonData.total[key].pct}%`),
@@ -89,7 +88,7 @@ async function fetchCheckSuiteId(githubToken, ref) {
 async function makeRequest(body, prNumber, githubToken) {
   const octokit = new Octokit({ auth: githubToken });
 
-  await octokit.request(
+  return octokit.request(
     `POST /repos/${OWNER}/${REPO}/issues/${prNumber}/comments`,
     {
       owner: OWNER,
