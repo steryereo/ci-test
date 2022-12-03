@@ -19,11 +19,11 @@ function getBranchRow(apiInfo, jsonData, suiteId) {
 }
 
 function getDiffRow(baseJsonData, headJsonData) {
+  const diff = headJsonData.total[key].pct - baseJsonData.total[key].pct;
+
   return getRow([
     "Diff",
-    ...COVERAGE_KEYS.map(
-      (key) => `${headJsonData.total[key].pct - baseJsonData.total[key].pct}%`
-    ),
+    ...COVERAGE_KEYS.map((key) => `${diff}% ${dif >= 0 ? "🟢" : "🔴"}`),
   ]);
 }
 
