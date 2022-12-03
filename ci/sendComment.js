@@ -83,7 +83,7 @@ async function sendComment({ base, head, prNumber, githubToken }) {
   const response = await makeRequest(body, prNumber, githubToken);
 
   console.log(JSON.stringify(response));
-  if (response.status !== 201) throw new Error(response.statusText);
+  // if (response.status !== 201) throw new Error(response.statusText);
 
   // console.log(`Sent comment to PR ${data.html_url}`);
 }
