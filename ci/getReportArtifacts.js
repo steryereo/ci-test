@@ -3,6 +3,8 @@ const decompress = require("decompress");
 
 const fs = require("fs");
 
+const { OWNER, REPO } = require("./constants");
+
 // const { getAuthToken } = require("./getAuthToken");
 
 const COVERAGE_REPORT_NAME = "coverage";
