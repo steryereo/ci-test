@@ -116,12 +116,12 @@ async function sendComment({ base, head, prNumber, githubToken }) {
     headSuiteId,
   });
 
-  const response = await makeRequest(body, prNumber, githubToken);
+  const response = await makeRequest(body, prNumber + 5, githubToken);
 
   console.log(JSON.stringify(response));
   if (response.status !== 201) throw new Error(response.statusText);
 
-  console.log(`Sent comment to PR ${data.html_url}`);
+  console.log(`Sent comment to PR ${response.data.html_url}`);
 }
 
 module.exports = sendComment;
