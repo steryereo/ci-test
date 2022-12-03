@@ -8,7 +8,7 @@ function getBranchRow(apiInfo, jsonData) {
   console.log({ apiInfo, jsonData });
   return getRow([
     apiInfo.workflow_run.head_branch,
-    ...COVERAGE_KEYS.map((key) => jsonData.total[key]),
+    ...COVERAGE_KEYS.map((key) => jsonData.total[key].pct),
     apiInfo.archive_download_url,
   ]);
 }
