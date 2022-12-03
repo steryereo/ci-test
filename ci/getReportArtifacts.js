@@ -114,6 +114,17 @@ async function getReportArtifacts(githubToken, baseSha, headSha) {
     }),
   ]);
 
+  console.log({ __dirName: fs.readdirSync(__dirname) });
+
+  console.log(
+    `${__dirName}/base-coverage`,
+    fs.readdirSync(`${__dirName}/base-coverage`)
+  );
+  console.log(
+    `${__dirName}/head-coverage`,
+    fs.readdirSync(`${__dirName}/head-coverage`)
+  );
+
   return {
     base: {
       coverage: {
