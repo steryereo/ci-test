@@ -10,11 +10,11 @@ function getPercentCell(baseEntry, headEntry) {
   }`;
 }
 
-function getBranchRow(apiData, jsonData) {
+function getBranchRow(apiInfo, jsonData) {
   return getRow([
-    apiData.workflow_run.head_branch,
+    apiInfo.workflow_run.head_branch,
     ...COVERAGE_KEYS.map((key) => jsonData.total[key]),
-    apiData.archive_download_url,
+    apiInfo.archive_download_url,
   ]);
 }
 
@@ -53,8 +53,8 @@ function generateCoverageCommentData(baseCoverage, headCoverage) {
     "### Test coverage",
     getRow(tableHeader),
     getRow(tableHeader.map(() => "---")),
-    getBranchRow(baseCoverage.apiData, baseJsonData),
-    getBranchRow(headCoverage.apiData, headJsonData),
+    getBranchRow(baseCoverage.apiInfo, baseJsonData),
+    getBranchRow(headCoverage.apiInfo, headJsonData),
     getDiffRow(baseJsonData, headJsonData),
   ];
 
