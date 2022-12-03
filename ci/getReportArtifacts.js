@@ -22,10 +22,10 @@ async function fetchAllArtifacts(githubToken, page = 1) {
   const octokit = new Octokit({ auth: githubToken });
 
   const res = await octokit.request(
-    `GET /repos/steryereo/ci-test/actions/artifacts?per_page=${PER_PAGE}&page=${page}&name=${COVERAGE_REPORT_NAME}`,
+    `GET /repos/${OWNER}/${REPO}/actions/artifacts?per_page=${PER_PAGE}&page=${page}&name=${COVERAGE_REPORT_NAME}`,
     {
-      owner: "steryereo",
-      repo: "ci-test",
+      owner: OWNER,
+      repo: REPO,
     }
   );
 
@@ -36,10 +36,10 @@ async function downloadArtifact(githubToken, id, filePath) {
   const octokit = new Octokit({ auth: githubToken });
 
   const res = await octokit.request(
-    `GET /repos/steryereo/ci-test/actions/artifacts/${id}/zip`,
+    `GET /repos/${OWNER}/${REPO}/actions/artifacts/${id}/zip`,
     {
-      owner: "steryereo",
-      repo: "ci-test",
+      owner: OWNER,
+      repo: REPO,
       artifact_id: id,
       archive_format: "zip",
     }
