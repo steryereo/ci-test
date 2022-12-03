@@ -32,7 +32,7 @@ function generateCoverageCommentData(baseCoverage, headCoverage) {
     `${headCoverage.reportDir}/coverage-summary.json`
   );
 
-  const tableHeader = ["", ...KEYS, "Full report"];
+  const tableHeader = ["", ...COVERAGE_KEYS, "Full report"];
 
   const rows = [
     "### Test coverage",
@@ -40,7 +40,7 @@ function generateCoverageCommentData(baseCoverage, headCoverage) {
     getRow(tableHeader.map(() => "---")),
     getRow([
       "test",
-      ...KEYS.map((key) =>
+      ...COVERAGE_KEYS.map((key) =>
         getPercentCell(baseData.total[key], headData.total[key])
       ),
       "",
