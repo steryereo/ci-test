@@ -3,11 +3,11 @@ const sendComment = require("./sendComment");
 
 async function sendPRStatsComment(githubToken, prNumber, baseSha, headSha) {
   try {
-    const { base, head } = await getReportArtifacts(
+    const { base, head } = await getReportArtifacts({
       githubToken,
       baseSha,
-      headSha
-    );
+      headSha,
+    });
 
     await sendComment({ base, head, githubToken, prNumber });
   } catch (e) {

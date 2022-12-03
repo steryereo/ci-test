@@ -94,7 +94,8 @@ async function downloadAndUnzip({ branch, githubToken, id, type }) {
   return destDir;
 }
 
-async function getReportArtifacts(githubToken, baseSha, headSha) {
+async function getReportArtifacts({ githubToken, baseSha, headSha }) {
+  console.log(JSON.stringify({ baseSha, headSha }));
   const { baseInfo, headInfo } = await findReportData({
     githubToken,
     baseSha,
