@@ -17,7 +17,7 @@ function getDiffRow(baseJsonData, headJsonData) {
   return getRow([
     "Diff",
     ...COVERAGE_KEYS.map(
-      (key) => headJsonData.total[key] - baseJsonData.total.key
+      (key) => headJsonData.total[key].pct - baseJsonData.total[key].pct
     ),
   ]);
 }
