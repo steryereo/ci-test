@@ -10,7 +10,7 @@ function getPercentCell(baseEntry, headEntry) {
   }`;
 }
 
-function getBranchPercentRow(apiData, jsonData) {
+function getBranchRow(apiData, jsonData) {
   return getRow([
     apiData.workflow_run.head_branch,
     ...COVERAGE_KEYS.map((key) => jsonData.total[key]),
@@ -53,8 +53,8 @@ function generateCoverageCommentData(baseCoverage, headCoverage) {
     "### Test coverage",
     getRow(tableHeader),
     getRow(tableHeader.map(() => "---")),
-    getBranchPercentRow(baseCoverage.apiData, baseJsonData),
-    getBranchPercentRow(headCoverage.apiData, headJsonData),
+    getBranchRow(baseCoverage.apiData, baseJsonData),
+    getBranchRow(headCoverage.apiData, headJsonData),
     getDiffRow(baseJsonData, headJsonData),
   ];
 
