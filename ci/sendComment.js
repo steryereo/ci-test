@@ -25,6 +25,8 @@ function getReportData(path) {
 }
 
 function generateCoverageCommentData(baseCoverage, headCoverage) {
+  console.log(JSON.stringify(baseCoverage));
+
   const baseData = getReportData(
     `${baseCoverage.reportDir}/coverage-summary.json`
   );
