@@ -4,13 +4,8 @@ const fs = require("fs");
 
 const COVERAGE_KEYS = ["statements", "branches", "functions", "lines"];
 
-function getPercentCell(baseEntry, headEntry) {
-  return `~~${baseEntry.pct}%~~ ${headEntry.pct}% ${
-    headEntry.pct >= baseEntry.pct ? "✅" : "❌"
-  }`;
-}
-
 function getBranchRow(apiInfo, jsonData) {
+  console.log({ apiInfo, jsonData });
   return getRow([
     apiInfo.workflow_run.head_branch,
     ...COVERAGE_KEYS.map((key) => jsonData.total[key]),
