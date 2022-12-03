@@ -22,7 +22,7 @@ async function fetchAllArtifacts(githubToken, page = 1) {
   const octokit = new Octokit({ auth: githubToken });
 
   const res = await octokit.request(
-    `GET /repos/${OWNER}/${REPO}/actions/artifacts?per_page=${PER_PAGE}&page=${page}&name=${COVERAGE_REPORT_NAME}`,
+    `GET /repos/${OWNER}/${REPO}/actions/artifacts?per_page=${PER_PAGE}&page=${page}&name=${COVERAGE_REPORT_NAME}?`,
     {
       owner: OWNER,
       repo: REPO,

@@ -1,15 +1,20 @@
 const { Octokit } = require("@octokit/core");
 
 const fs = require("fs");
+const { GITHUB_ACTIONS_APP_ID, OWNER, REPO } = require("./constants");
 
 const COVERAGE_KEYS = ["statements", "branches", "functions", "lines"];
 
-function getBranchRow(apiInfo, jsonData) {
+function getReportDownloadLink({ suiteId, artifactId }) {
+  return `https://github.com/${OWNER}/${REPO}/suites/${suiteId}/artifacts/${artifactId}`;
+}
+
+function getBranchRow(apiInfo, jsonData, suiteId) {
   console.log({ apiInfo, jsonData });
   return getRow([
     apiInfo.workflow_run.head_branch,
-    ...COVERAGE_KEYS.map((key) => jsonData.total[key].pct),
-    apiInfo.archive_download_url,
+    ...COVERAGE_KEYS.map((key) => `${jsonData.total[key].pct}%`),
+    getReportDownloadLink({ artifactId: apiInfo.id, suiteId }),
   ]);
 }
 
@@ -17,7 +22,7 @@ function getDiffRow(baseJsonData, headJsonData) {
   return getRow([
     "Diff",
     ...COVERAGE_KEYS.map(
-      (key) => headJsonData.total[key].pct - baseJsonData.total[key].pct
+      (key) => `${headJsonData.total[key].pct - baseJsonData.total[key].pct}%`
     ),
   ]);
 }
@@ -32,7 +37,12 @@ function getReportData(path) {
   return JSON.parse(fs.readFileSync(path));
 }
 
-function generateCoverageCommentData(baseCoverage, headCoverage) {
+function generateCoverageCommentData({
+  baseCoverage,
+  headCoverage,
+  baseSuiteId,
+  headSuiteId,
+}) {
   console.log(JSON.stringify(baseCoverage));
 
   const baseJsonData = getReportData(
@@ -56,31 +66,32 @@ function generateCoverageCommentData(baseCoverage, headCoverage) {
   return rows.join("\n");
 }
 
-async function fetchCheckSuite(githubToken, ref) {
+async function fetchCheckSuiteId(githubToken, ref) {
   const octokit = new Octokit({
     auth: githubToken,
   });
 
   const res = await octokit.request(
-    `GET /repos/steryereo/ci-test/commits/${ref}/check-suites`,
+    `GET /repos/${OWNER}/${REPO}/commits/${ref}/check-suites?app_id=${GITHUB_ACTIONS_APP_ID}`,
     {
-      owner: "steryereo",
-      repo: "ci-test",
+      app_id: GITHUB_ACTIONS_APP_ID,
+      owner: OWNER,
+      repo: REPO,
       ref,
     }
   );
 
-  console.log(JSON.stringify({ res }));
+  return res.data.check_suites[0].id;
 }
 
 async function makeRequest(body, prNumber, githubToken) {
   const octokit = new Octokit({ auth: githubToken });
 
   await octokit.request(
-    `POST /repos/steryereo/ci-test/issues/${prNumber}/comments`,
+    `POST /repos/${OWNER}/${REPO}/issues/${prNumber}/comments`,
     {
-      owner: "steryereo",
-      repo: "ci-test",
+      owner: OWNER,
+      repo: REPO,
       issue_number: prNumber,
       body,
     }
@@ -90,16 +101,21 @@ async function makeRequest(body, prNumber, githubToken) {
 async function sendComment({ base, head, prNumber, githubToken }) {
   console.log(JSON.stringify({ base, head, prNumber, githubToken }));
 
-  await fetchCheckSuite(
+  const baseSuiteId = await fetchCheckSuiteId(
     githubToken,
     base.coverage.apiInfo.workflow_run.head_sha
   );
-  await fetchCheckSuite(
+  const headSuiteId = await fetchCheckSuiteId(
     githubToken,
     head.coverage.apiInfo.workflow_run.head_sha
   );
 
-  const body = generateCoverageCommentData(base.coverage, head.coverage);
+  const body = generateCoverageCommentData({
+    baseCoverage: base.coverage,
+    headCoverage: head.coverage,
+    baseSuiteId,
+    headSuiteId,
+  });
 
   const response = await makeRequest(body, prNumber, githubToken);
 
