@@ -19,7 +19,7 @@ function getBranchRow(apiInfo, jsonData, suiteId) {
 }
 
 function getDiffCell(diff) {
-  return `${diff}% ${dif >= 0 ? "🟢" : "🔴"}`;
+  return `${diff}% ${diff >= 0 ? "🟢" : "🔴"}`;
 }
 
 function getDiffRow(baseJsonData, headJsonData) {
@@ -101,8 +101,6 @@ async function makeRequest(body, prNumber, githubToken) {
 }
 
 async function sendComment({ base, head, prNumber, githubToken }) {
-  console.log(JSON.stringify({ base, head, prNumber, githubToken }));
-
   const baseSuiteId = await fetchCheckSuiteId(
     githubToken,
     base.coverage.apiInfo.workflow_run.head_sha
