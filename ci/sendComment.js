@@ -18,12 +18,16 @@ function getBranchRow(apiInfo, jsonData, suiteId) {
   ]);
 }
 
-function getDiffRow(baseJsonData, headJsonData) {
-  const diff = headJsonData.total[key].pct - baseJsonData.total[key].pct;
+function getDiffCell(diff) {
+  return `${diff}% ${dif >= 0 ? "🟢" : "🔴"}`;
+}
 
+function getDiffRow(baseJsonData, headJsonData) {
   return getRow([
     "Diff",
-    ...COVERAGE_KEYS.map((key) => `${diff}% ${dif >= 0 ? "🟢" : "🔴"}`),
+    ...COVERAGE_KEYS.map((key) =>
+      getDiffCell(headJsonData.total[key].pct - baseJsonData.total[key].pct)
+    ),
   ]);
 }
 
