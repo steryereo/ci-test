@@ -88,6 +88,8 @@ async function downloadAndUnzip({ branch, githubToken, id, type }) {
 
   await decompress(zipFilePath, destDir);
   await decompress(tarFilePath, destDir);
+
+  return destDir;
 }
 
 async function getReportArtifacts(githubToken, baseSha, headSha) {
