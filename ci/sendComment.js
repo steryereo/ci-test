@@ -18,7 +18,7 @@ function getBranchRow(apiInfo, jsonData, suiteId) {
 }
 
 function getDiffCell(diff) {
-  return `${diff}% ${diff >= 0 ? "🟢" : "🔴"}`;
+  return `${diff}% ${diff >= 0 ? "✅" : "⚠️"}`;
 }
 
 function getDiffRow(baseJsonData, headJsonData) {
@@ -36,7 +36,7 @@ function getRow(cells) {
 
 function getReportData(path) {
   if (!fs.existsSync(path)) throw new Error(`file not found: ${path}`);
-
+⚠️
   return JSON.parse(fs.readFileSync(path));
 }
 
