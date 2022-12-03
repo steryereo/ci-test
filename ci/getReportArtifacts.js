@@ -22,7 +22,6 @@ function findArtifactInfo(list, sha) {
 
 async function fetchAllArtifacts(githubToken, page = 1) {
   const octokit = new Octokit({ auth: githubToken });
-
   const res = await octokit.request(
     `GET /repos/${OWNER}/${REPO}/actions/artifacts?per_page=${PER_PAGE}&page=${page}&name=${COVERAGE_REPORT_NAME}?`,
     {
@@ -31,6 +30,7 @@ async function fetchAllArtifacts(githubToken, page = 1) {
     }
   );
 
+  console.log(JSON.stringify({ res }));
   return res.data;
 }
 
@@ -64,7 +64,7 @@ async function findReportData({
   page = 1,
 }) {
   const allArtifacts = await fetchAllArtifacts(githubToken, page);
-  console.log(JSON.stringify({ allArtifacts }));
+  // console.log(JSON.stringify({ allArtifacts }));
   const baseInfo =
     foundBaseInfo || findArtifactInfo(allArtifacts.artifacts, baseSha);
   const headInfo =
