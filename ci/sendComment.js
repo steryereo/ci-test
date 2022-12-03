@@ -10,9 +10,13 @@ function getPercentCell(baseEntry, headEntry) {
   }`;
 }
 
-// function getPercentRow(data) {
-//   const branchLabel = data.
-// }
+function getBranchPercentRow(apiData, jsonEntry) {
+  return getRow([
+    apiData.workflow_run.head_branch,
+    ...COVERAGE_KEYS.map((key) => jsonEntry.total[key]),
+    apiData.archive_download_url,
+  ]);
+}
 
 function getRow(cells) {
   return `| ${cells.join(" | ")} |`;
@@ -27,26 +31,21 @@ function getReportData(path) {
 function generateCoverageCommentData(baseCoverage, headCoverage) {
   console.log(JSON.stringify(baseCoverage));
 
-  const baseData = getReportData(
+  const baseJsonData = getReportData(
     `${baseCoverage.reportDir}/coverage-summary.json`
   );
-  const headData = getReportData(
+  const headJsonData = getReportData(
     `${headCoverage.reportDir}/coverage-summary.json`
   );
 
-  const tableHeader = ["", ...COVERAGE_KEYS, "Full report"];
+  const tableHeader = ["Branch", ...COVERAGE_KEYS, "Full report"];
 
   const rows = [
     "### Test coverage",
     getRow(tableHeader),
     getRow(tableHeader.map(() => "---")),
-    getRow([
-      "test",
-      ...COVERAGE_KEYS.map((key) =>
-        getPercentCell(baseData.total[key], headData.total[key])
-      ),
-      "",
-    ]),
+    getBranchPercentRow(baseCoverage.apiData, baseJsonData),
+    getBranchPercentRow(headCoverage.apiData, headJsonData),
   ];
 
   return rows.join("\n");
