@@ -18,7 +18,7 @@ function getBranchRow(apiInfo, jsonData, suiteId) {
 }
 
 function getDiffCell(diff) {
-  return `${diff}% ${diff >= 0 ? "🟢" : "🔴"}`;
+  return `${diff >= 0 ? "+" : "-"} ${Math.abs(diff)}%`;
 }
 
 function getDiffRow(baseJsonData, headJsonData) {
