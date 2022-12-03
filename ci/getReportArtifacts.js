@@ -95,13 +95,13 @@ async function downloadAndUnzip({ branch, githubToken, id, type }) {
 }
 
 async function getReportArtifacts(githubToken, baseSha, headSha) {
-  console.log(JSON.stringify({ baseInfo, headInfo }));
-
   const { baseInfo, headInfo } = await findReportData({
     githubToken,
     baseSha,
     headSha,
   });
+
+  console.log(JSON.stringify({ baseInfo, headInfo }));
 
   const [baseCoverageDir, headCoverageDir] = await Promise.all([
     downloadAndUnzip({
