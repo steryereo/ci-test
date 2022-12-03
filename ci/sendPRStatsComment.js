@@ -18,7 +18,7 @@ async function sendPRStatsComment(githubToken, prNumber, baseSha, headSha) {
 
 /* istanbul ignore next */
 if (require.main === module) {
-  sendCoveragePRComment(...process.argv.slice(2));
+  sendPRStatsComment(...process.argv.slice(2));
 }
 
-module.exports = sendCoveragePRComment;
+module.exports = sendPRStatsComment;
