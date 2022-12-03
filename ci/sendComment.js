@@ -18,9 +18,7 @@ function getRow(cells) {
   return `| ${cells.join(" | ")} |`;
 }
 
-function getReportData(fileName) {
-  const path = `${__dirname}/${fileName}`;
-
+function getReportData(path) {
   if (!fs.existsSync(path)) throw new Error(`file not found: ${path}`);
 
   return JSON.parse(fs.readFileSync(path));
