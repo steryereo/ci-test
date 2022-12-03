@@ -90,8 +90,8 @@ async function makeRequest(body, prNumber, githubToken) {
 async function sendComment({ base, head, prNumber, githubToken }) {
   console.log(JSON.stringify({ base, head, prNumber, githubToken }));
 
-  await fetchCheckSuite(base.apiInfo.workflow_run.head_ref);
-  await fetchCheckSuite(head.apiInfo.workflow_run.head_ref);
+  await fetchCheckSuite(base.coverage.apiInfo.workflow_run.head_ref);
+  await fetchCheckSuite(head.coverage.apiInfo.workflow_run.head_ref);
 
   const body = generateCoverageCommentData(base.coverage, head.coverage);
 
