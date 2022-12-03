@@ -30,7 +30,6 @@ async function fetchAllArtifacts(githubToken, page = 1) {
     }
   );
 
-  console.log(JSON.stringify({ res }));
   return res.data;
 }
 
@@ -64,7 +63,7 @@ async function findReportData({
   page = 1,
 }) {
   const allArtifacts = await fetchAllArtifacts(githubToken, page);
-  // console.log(JSON.stringify({ allArtifacts }));
+
   const baseInfo =
     foundBaseInfo || findArtifactInfo(allArtifacts.artifacts, baseSha);
   const headInfo =
@@ -97,14 +96,11 @@ async function downloadAndUnzip({ branch, githubToken, id, type }) {
 }
 
 async function getReportArtifacts({ githubToken, baseSha, headSha }) {
-  console.log(JSON.stringify({ baseSha, headSha }));
   const { baseInfo, headInfo } = await findReportData({
     githubToken,
     baseSha,
     headSha,
   });
-
-  console.log(JSON.stringify({ baseInfo, headInfo }));
 
   const [baseCoverageDir, headCoverageDir] = await Promise.all([
     downloadAndUnzip({

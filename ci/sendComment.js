@@ -58,8 +58,8 @@ function generateCoverageCommentData({
     "### Test coverage",
     getRow(tableHeader),
     getRow(tableHeader.map(() => "---")),
-    getBranchRow(baseCoverage.apiInfo, baseJsonData),
-    getBranchRow(headCoverage.apiInfo, headJsonData),
+    getBranchRow(baseCoverage.apiInfo, baseJsonData, baseSuiteId),
+    getBranchRow(headCoverage.apiInfo, headJsonData, headSuiteId),
     getDiffRow(baseJsonData, headJsonData),
   ];
 
