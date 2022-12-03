@@ -12,7 +12,7 @@ function getReportDownloadLink({ suiteId, artifactId }) {
 function getBranchRow(apiInfo, jsonData, suiteId) {
   console.log({ apiInfo, jsonData });
   return getRow([
-    apiInfo.workflow_run.head_branch,
+    "`" + apiInfo.workflow_run.head_branch + "`",
     ...COVERAGE_KEYS.map((key) => `${jsonData.total[key].pct}%`),
     getReportDownloadLink({ artifactId: apiInfo.id, suiteId }),
   ]);
