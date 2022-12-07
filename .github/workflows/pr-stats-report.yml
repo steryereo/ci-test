@@ -6,19 +6,13 @@ on:
 
 permissions:
   actions: write
+  issues: write
+  pull-requests: write
 
 jobs:
   report-stats:
     runs-on: ubuntu-latest
     steps:
-      - name: Wait for head coverage report
-        uses: fountainhead/action-wait-for-check@v1.1.0
-        id: wait-for-head
-        with:
-          token: ${{ secrets.GITHUB_TOKEN }}
-          checkName: test
-          ref: ${{ github.event.pull_request.head.sha }}
-
       - name: Wait for base coverage report
         uses: fountainhead/action-wait-for-check@v1.1.0
         id: wait-for-base
@@ -26,6 +20,14 @@ jobs:
           token: ${{ secrets.GITHUB_TOKEN }}
           checkName: test
           ref: ${{ github.event.pull_request.base.sha }}
+
+      - name: Wait for head coverage report
+        uses: fountainhead/action-wait-for-check@v1.1.0
+        id: wait-for-head
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          checkName: test
+          ref: ${{ github.event.pull_request.head.sha }}
 
       - uses: actions/checkout@v3
 
@@ -37,25 +39,6 @@ jobs:
       - name: Install Dependencies
         run: cd ci && yarn
 
-      - name: Download coverage reports
-        run: |
-          node ci/getCoverageReports.js ${{ secrets.GITHUB_TOKEN }} ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
-
-      - name: Extract downloaded reports
-        run: |
-          cd ci
-
-          mkdir base-coverage
-          mkdir head-coverage
-
-          unzip base-coverage.zip -d base-coverage
-          tar -xzvf base-coverage/coverage.tgz -C base-coverage
-
-          unzip head-coverage.zip -d head-coverage
-          tar -xzvf head-coverage/coverage.tgz -C head-coverage
-
-
-          ls -la base-coverage
-
       - name: Send PR comment with coverage diff
-        run: node ci/sendCoveragePRComment.js base-coverage/coverage-summary.json head-coverage/coverage-summary.json ${{ secrets.GITHUB_TOKEN }} ${{ github.event.number }}
+        run: |
+          node ci/sendPRStatsComment.js ${{ secrets.GITHUB_TOKEN }} ${{ github.event.number }} ${{ github.event.pull_request.base.sha }} ${{ github.event.pull_request.head.sha }}
