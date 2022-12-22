@@ -8,5 +8,5 @@
     "jest": "^29.3.1",
     "node-fetch": "2"
   },
-  "version": "0.2.0"
+  "version": "0.2.1"
 }
