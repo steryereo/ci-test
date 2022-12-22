@@ -1,4 +1,13 @@
-# 0.1.0 (2022-12-22)
+# [0.2.0](https://github.com/steryereo/ci-test/compare/v0.1.0...v0.2.0) (2022-12-22)
+
+
+### Features
+
+* add sayHi function ([b7552f9](https://github.com/steryereo/ci-test/commit/b7552f939b9b5b460aabd9d6e1157de8bc05cb5c))
+
+
+
+# [0.1.0](https://github.com/steryereo/ci-test/compare/1e7d3986aa6ecbc5505b44606763a82b7596532b...v0.1.0) (2022-12-22)
 
 
 ### Bug Fixes
