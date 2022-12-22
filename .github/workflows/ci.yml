@@ -31,6 +31,8 @@ jobs:
           name: coverage
           path: tmp/coverage.tgz
   version:
+    needs: test
+    runs-on: ubuntu-latest
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
