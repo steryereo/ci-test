@@ -43,3 +43,4 @@ jobs:
           github-token: ${{ secrets.GITHUB_TOKEN }}
           git-message: "Version {version}"
           preset: conventionalcommits
+          skip-on-empty: false
