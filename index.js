@@ -6,4 +6,8 @@ function multiply(...args) {
   return args.reduce((total, arg) => total * arg, 1);
 }
 
-module.exports = { add, multiply };
+function sayHi() {
+  return "Hi";
+}
+
+module.exports = { add, multiply, sayHi };
