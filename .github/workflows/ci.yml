@@ -30,15 +30,17 @@ jobs:
         with:
           name: coverage
           path: tmp/coverage.tgz
-  version:
-    needs: test
-    runs-on: ubuntu-latest
+  release:
     if: github.ref == 'refs/heads/main'
     steps:
       - name: Checkout
         uses: actions/checkout@v3
-      - name: Conventional Changelog Action
-        uses: TriPSs/conventional-changelog-action@v3
+      - name: Semantic Release
+        uses: cycjimmy/semantic-release-action@v3
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          github-token: ${{ secrets.GITHUB_TOKEN }}
-          skip-on-empty: false
+          semantic_version: 19
+          extra_plugins: |
+            @semantic-release/changelog@6
+            @semantic-release/git@10
