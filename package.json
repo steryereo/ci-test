@@ -1,4 +1,5 @@
 {
+  "name": "ci-test",
   "scripts": {
     "test": "jest"
   },
