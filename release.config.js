@@ -1,6 +1,6 @@
 const config = {
   preset: "angular",
-  branches: ["main", "release"],
+  branches: "main",
   plugins: [
     "@semantic-release/commit-analyzer",
     "@semantic-release/release-notes-generator",
