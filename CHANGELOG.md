@@ -1,3 +1,10 @@
+# [0.3.0](https://github.com/steryereo/ci-test/compare/v0.2.2...v0.3.0) (2022-12-23)
+
+
+### Features
+
+* versions ([7777715](https://github.com/steryereo/ci-test/commit/7777715c5d80c5026a2c55ab55da7cfe48d60063))
+
 ## [0.2.2](https://github.com/steryereo/ci-test/compare/v0.2.1...v0.2.2) (2022-12-22)
 
 
@@ -27,6 +34,3 @@
 
 * lots of progress ([1e7d398](https://github.com/steryereo/ci-test/commit/1e7d3986aa6ecbc5505b44606763a82b7596532b))
 * things work ([d59c6cf](https://github.com/steryereo/ci-test/commit/d59c6cfb6fe939dfc4998e13e5543b28943f840c))
-
-
-
